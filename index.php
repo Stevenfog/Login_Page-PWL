@@ -1,5 +1,5 @@
 <?php
-session_start(); // Start session nya
+session_start(); // Start session 
 if(isset($_SESSION['username']))
 { 
   header('location: welcome.php'); 
