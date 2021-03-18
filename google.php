@@ -15,27 +15,26 @@ if ($gclient->getAccessToken()) {
   $gpuserprofile = $google_oauthv2->userinfo->get();
   $nama = $gpuserprofile['given_name']." ".$gpuserprofile['family_name']; // Ambil nama dari Akun Google
   $email = $gpuserprofile['email']; // Ambil email Akun Google nya
-  // Buat query untuk mengecek apakah data user dengan email tersebut sudah ada atau belum
-  // Jika ada, ambil id, username, dan nama dari user tersebut
+  
   $sql = $pdo->prepare("SELECT id, username, nama FROM user WHERE email=:a");
   $sql->bindParam(':a', $email);
-  $sql->execute(); // Eksekusi querynya
-  $user = $sql->fetch(); // Ambil datanya dari hasil query tadi
-  if(empty($user)){ // Jika User dengan email tersebut belum ada
-    // Ambil username dari kata sebelum simbol @ pada email
-    $ex = explode('@', $email); // Pisahkan berdasarkan "@"
-    $username = $ex[0]; // Ambil kata pertama
-    // Lakukan insert data user baru tanpa password
+  $sql->execute();
+  $user = $sql->fetch(); 
+  if(empty($user)){ 
+    
+    $ex = explode('@', $email); 
+    $username = $ex[0];
+    
     $sql = $pdo->prepare("INSERT INTO user(username, nama, email) VALUES(:username,:nama,:email)");
     $sql->bindParam(':username', $username);
     $sql->bindParam(':nama', $nama);
     $sql->bindParam(':email', $email);
-    $sql->execute(); // Eksekusi query insert
-    $id = $pdo->lastInsertId(); // Ambil id user yang baru saja di insert
+    $sql->execute(); 
+    $id = $pdo->lastInsertId(); 
   }else{
-    $id = $user['id']; // Ambil id pada tabel user
-    $username = $user['username']; // Ambil username pada tabel user
-    $nama = $user['nama']; // Ambil username pada tabel user
+    $id = $user['id']; 
+    $username = $user['username']; 
+    $nama = $user['nama']; 
   }
   $_SESSION['id'] = $id;
   $_SESSION['username'] = $username;
